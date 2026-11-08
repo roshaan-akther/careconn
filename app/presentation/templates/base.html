@@ -3,41 +3,61 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{% block title %}Community Care Connect{% endblock %}</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@1.1.0/dist/basecoat.cdn.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/basecoat-css@1.1.0/dist/js/all.min.js" defer></script>
+<title>{% block title %}CareConn{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@latest/dist/basecoat.min.css">
 <style>
-  body { font-family: system-ui, sans-serif; margin: 0; background:#f7f8fa; }
-  .container { max-width: 960px; margin: 0 auto; padding: 1rem; }
-  nav { background:#1f3864; color:#fff; padding:.75rem 1rem; }
-  nav a { color:#fff; margin-right:1rem; text-decoration:none; }
-  .card { background:#fff; border-radius:8px; padding:1rem; margin:1rem 0; box-shadow:0 1px 3px rgba(0,0,0,.1); }
-  .btn { display:inline-block; padding:.5rem 1rem; border-radius:6px; background:#1f3864; color:#fff; text-decoration:none; border:none; cursor:pointer; }
+  body { font-family: 'Inter', system-ui, sans-serif; margin: 0; background:#f7f8fa; color:#0f172a; }
+  .container { max-width: 760px; margin: 0 auto; padding: 1rem; }
+  nav { max-width: 920px; margin: 1rem auto 0; background:#1f3864; color:#fff; padding:1rem 2rem; border-radius: 999px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.5rem; box-shadow: 0 10px 30px rgba(15,23,42,.22); position: sticky; top: 1rem; z-index: 20; font-size:1rem; }
+  nav a { color:#fff; margin-right:1rem; text-decoration:none; font-size:.92rem; display:inline-flex; align-items:center; gap:.35rem; }
+  nav a svg { width:16px; height:16px; }
+  .nav-icon { display:none; }
+  @media (max-width: 720px) {
+    .nav-text { display:none; }
+    .nav-icon { display:inline-flex; }
+    nav a { margin-right:.75rem; }
+  }
+  nav a:hover { text-decoration:underline; }
+  .card { background:#fff; border-radius:16px; padding:1.25rem; margin:1rem 0; box-shadow:0 2px 12px rgba(15,23,42,.07); }
+  .btn { display:inline-block; padding:.55rem 1.1rem; border-radius:10px; background:#1f3864; color:#fff; text-decoration:none; border:none; cursor:pointer; font-size:.9rem; }
   .btn-secondary { background:#6c757d; }
-  .flash { padding:.75rem; border-radius:6px; margin:.5rem 0; }
+  .flash { padding:.8rem 1rem; border-radius:12px; margin:.75rem 0; }
   .flash.success { background:#d4edda; color:#155724; }
   .flash.danger { background:#f8d7da; color:#721c24; }
   .flash.warning { background:#fff3cd; color:#856404; }
-  label { display:block; margin:.5rem 0 .25rem; font-weight:600; }
-  input, textarea, select { width:100%; padding:.5rem; border:1px solid #ccc; border-radius:6px; box-sizing:border-box; }
+  label { display:block; margin:.6rem 0 .3rem; font-weight:600; font-size:.88rem; }
+  input, textarea, select { width:100%; padding:.6rem .75rem; border:1px solid #d5dbe5; border-radius:10px; box-sizing:border-box; font:inherit; background:#fbfcfe; }
+  input:focus, textarea:focus, select:focus { outline:none; border-color:#1f3864; box-shadow:0 0 0 3px rgba(31,56,100,.12); }
   .row { display:flex; gap:1rem; flex-wrap:wrap; }
   .col { flex:1; min-width:200px; }
+  .empty { color:#64748b; text-align:center; padding:1.5rem; }
+  .badge { display:inline-block; padding:.2rem .65rem; border-radius:999px; font-size:.72rem; font-weight:600; background:#eef1f6; color:#475569; text-transform:capitalize; }
+  .badge.open { background:#eef2ff; color:#4f46e5; }
+  .badge.assigned { background:#fffbeb; color:#d97706; }
+  .badge.in_progress { background:#eff6ff; color:#2563eb; }
+  .badge.completed { background:#ecfdf5; color:#059669; }
 </style>
 </head>
 <body>
 <nav>
-  <a href="{{ url_for('requests.dashboard') }}"><strong>Community Care Connect</strong></a>
-  {% if current_user.is_authenticated %}
-    <a href="{{ url_for('requests.dashboard') }}">Dashboard</a>
-    <a href="{{ url_for('requests.list_requests') }}">Requests</a>
-    {% if current_user.role=='volunteer' %}<a href="{{ url_for('volunteers.profile') }}">Profile</a>{% endif %}
-    {% if current_user.is_admin %}<a href="{{ url_for('admin.admin_dashboard') }}">Admin</a>{% endif %}
-    <a href="{{ url_for('requests.notifications') }}">Notifications</a>
-    <a href="{{ url_for('auth.logout') }}">Logout</a>
-  {% else %}
-    <a href="{{ url_for('auth.login') }}">Login</a>
-    <a href="{{ url_for('auth.register') }}">Register</a>
-  {% endif %}
+  <a href="{{ url_for('requests.dashboard') }}"><strong>CareConn</strong></a>
+  <div style="margin-left:auto; display:flex; align-items:center; flex-wrap:wrap; gap:.25rem;">
+    {% if current_user.is_authenticated %}
+      <a href="{{ url_for('requests.dashboard') }}" {% if request.endpoint=='requests.dashboard' %}style="text-decoration:underline;"{% endif %}><i class="nav-icon" data-lucide="layout-dashboard"></i><span class="nav-text">Dashboard</span></a>
+      <a href="{{ url_for('requests.list_requests') }}" {% if request.endpoint=='requests.list_requests' %}style="text-decoration:underline;"{% endif %}><i class="nav-icon" data-lucide="list"></i><span class="nav-text">{{ 'Open Requests' if current_user.role in ('seeker','volunteer') else 'Requests' }}</span></a>
+      {% if current_user.role=='volunteer' %}<a href="{{ url_for('volunteers.profile') }}" {% if request.endpoint=='volunteers.profile' %}style="text-decoration:underline;"{% endif %}><i class="nav-icon" data-lucide="user"></i><span class="nav-text">Profile</span></a>{% endif %}
+      {% if current_user.is_admin %}<a href="{{ url_for('admin.admin_dashboard') }}" {% if request.endpoint=='admin.admin_dashboard' %}style="text-decoration:underline;"{% endif %}><i class="nav-icon" data-lucide="shield"></i><span class="nav-text">Admin</span></a>{% endif %}
+      <a href="{{ url_for('requests.notifications') }}" aria-label="Notifications" style="position:relative;">
+        <i data-lucide="bell"></i>{% if unread %}<span style="position:absolute;top:-8px;right:-8px;background:#dc2626;color:#fff;font-size:.62rem;font-weight:700;min-width:16px;height:16px;border-radius:999px;display:grid;place-items:center;padding:0 4px;">{{ unread }}</span>{% endif %}
+      </a>
+      <a href="{{ url_for('auth.logout') }}" aria-label="Logout"><i data-lucide="log-out"></i></a>
+    {% else %}
+      <a href="{{ url_for('auth.login') }}">Login</a>
+      <a href="{{ url_for('auth.register') }}">Register</a>
+    {% endif %}
+  </div>
 </nav>
 <div class="container">
   {% with messages = get_flashed_messages(with_categories=true) %}
@@ -47,5 +67,7 @@
   {% endwith %}
   {% block content %}{% endblock %}
 </div>
+<script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>if(window.lucide) lucide.createIcons();</script>
 </body>
 </html>

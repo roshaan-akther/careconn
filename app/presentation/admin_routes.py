@@ -15,4 +15,12 @@ def admin_dashboard():
         return redirect(url_for("requests.dashboard"))
     users = UserRepo.all_users()
     reqs = RequestRepo.all_requests()
-    return render_template("admin.html", users=users, reqs=reqs)
+    stats = {
+        "users": len(users),
+        "volunteers": sum(1 for u in users if u.role == "volunteer"),
+        "seekers": sum(1 for u in users if u.role == "seeker"),
+        "requests": len(reqs),
+        "open": sum(1 for r in reqs if r.status == "open"),
+        "completed": sum(1 for r in reqs if r.status == "completed"),
+    }
+    return render_template("admin.html", users=users, reqs=reqs, stats=stats)

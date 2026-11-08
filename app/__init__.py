@@ -38,4 +38,21 @@ def create_app(config_name="default"):
         from app.data.repositories import UserRepo
         return UserRepo.get_by_id(int(user_id))
 
+    @app.context_processor
+    def inject_globals():
+        from flask_login import current_user
+        unread = 0
+        if current_user.is_authenticated:
+            from app.data.repositories import NotificationRepo
+            unread = NotificationRepo.unread_count(current_user.id)
+        return {"unread": unread}
+
+    @app.template_filter("status_label")
+    def status_label(s):
+        return s.replace("_", " ").title() if s else ""
+
+    @app.template_filter("friendly_time")
+    def friendly_time(dt):
+        return dt.strftime("%b %d, %Y · %I:%M %p") if dt else ""
+
     return app

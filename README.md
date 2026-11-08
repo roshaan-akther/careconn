@@ -1,4 +1,4 @@
-# Community Care Connect
+# CareConn
 
 Connects people needing everyday help with volunteers.
 

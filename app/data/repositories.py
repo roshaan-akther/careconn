@@ -123,3 +123,7 @@ class NotificationRepo:
     @staticmethod
     def unread_count(uid):
         return Notification.query.filter_by(user_id=uid, read=False).count()
+    @staticmethod
+    def mark_all_read(uid):
+        Notification.query.filter_by(user_id=uid, read=False).update({"read": True})
+        db.session.commit()

@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="card">
-  <h2>Volunteer Profile</h2>
-  <form method="post">
-    <label>Skills (comma separated)</label><input name="skills" value="{{ vp.skills if vp else '' }}" placeholder="groceries,driving">
-    <label>Availability</label><input name="availability" value="{{ vp.availability if vp else 'anytime' }}">
-    <label>Service radius (km)</label><input name="radius_km" type="number" value="{{ vp.radius_km if vp else 10 }}">
-    {% if vp %}<p>Rating: {{ vp.rating_avg|round(2) }} ({{ vp.rating_count }} ratings)</p>{% endif %}
-    <br><button class="btn" type="submit">Save</button>
-  </form>
+<div style="max-width:420px;margin:2rem auto;">
+  <div class="card" style="border-radius:20px;padding:1.75rem;text-align:center;">
+    <div style="width:56px;height:56px;border-radius:50%;background:#1f3864;color:#fff;display:grid;place-items:center;font-weight:700;font-size:1.1rem;margin:0 auto .75rem;">{{ current_user.name[:1]|upper }}</div>
+    <div style="font-weight:700;font-size:1.05rem;">{{ current_user.name }}</div>
+    <div style="font-size:.82rem;color:#64748b;margin-bottom:1.25rem;">
+      {% if vp and vp.rating_count > 0 %}{{ vp.rating_avg|round(1) }}/5 from {{ vp.rating_count }} rating{{ 's' if vp.rating_count != 1 else '' }}{% else %}No ratings yet{% endif %}
+    </div>
+    <form method="post" style="display:grid;gap:.9rem;text-align:left;">
+      <div><label>Skills</label><input name="skills" value="{{ vp.skills if vp else '' }}" placeholder="groceries, driving, forms" style="border-radius:999px;padding:.75rem;"></div>
+      <div><label>Availability</label><input name="availability" value="{{ vp.availability if vp else 'anytime' }}" style="border-radius:999px;padding:.75rem;"></div>
+      <div><label>Radius (km)</label><input name="radius_km" type="number" value="{{ vp.radius_km if vp else 10 }}" style="border-radius:999px;padding:.75rem;"></div>
+      <button class="btn" type="submit" style="border-radius:999px;padding:.8rem;">Save</button>
+    </form>
+  </div>
 </div>
 {% endblock %}

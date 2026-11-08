@@ -2,6 +2,9 @@
 {% block content %}
 <h2>Notifications</h2>
 {% for n in notifications %}
-  <div class="card">{{ n.message }} <small>({{ n.created_at }})</small></div>
-{% else %}<p>No notifications.</p>{% endfor %}
+  <div class="card" style="border-radius:16px;{% if not n.read %}border-left:4px solid #1f3864;{% endif %}">
+    <div style="font-size:.92rem;">{{ n.message }}</div>
+    <div style="font-size:.75rem;color:#94a3b8;margin-top:.25rem;">{{ n.created_at|friendly_time }}</div>
+  </div>
+{% else %}<p class="empty">No notifications yet.</p>{% endfor %}
 {% endblock %}

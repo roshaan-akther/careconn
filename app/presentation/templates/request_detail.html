@@ -1,40 +1,56 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="card">
-  <h2>{{ r.title }}</h2>
-  <p><strong>Status:</strong> {{ r.status }}</p>
-  <p>{{ r.description }}</p>
-  <p><strong>Category:</strong> {{ r.category }} | <strong>Urgency:</strong> {{ r.urgency }} | <strong>Location:</strong> {{ r.location }}</p>
-  <p><strong>Seeker:</strong> {{ r.seeker.name }}</p>
-  {% if r.volunteer %}<p><strong>Volunteer:</strong> {{ r.volunteer.name }}</p>{% endif %}
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;">
+    <h2 style="margin:0;">{{ r.title }}</h2>
+    <span class="badge {{ r.status }}">{{ r.status|status_label }}</span>
+  </div>
+  <p style="color:#475569;margin-top:.5rem;">{{ r.description }}</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem 1.5rem;font-size:.88rem;margin:1rem 0;">
+    <div><span style="color:#64748b;">Category:</span> {{ r.category|capitalize }}</div>
+    <div><span style="color:#64748b;">Urgency:</span> {{ r.urgency|capitalize }}</div>
+    <div><span style="color:#64748b;">Location:</span> {{ r.location }}</div>
+    <div><span style="color:#64748b;">Seeker:</span> {{ r.seeker.name }}</div>
+    {% if r.volunteer %}<div style="grid-column:1/-1;"><span style="color:#64748b;">Assigned volunteer:</span> {{ r.volunteer.name }}</div>{% endif %}
+  </div>
+
   {% if match %}
-    <p><strong>Suggested volunteer:</strong> {{ match[0].name }} ({{ match[1].skills }})</p>
+    <div style="background:#f7f8fa;border-radius:12px;padding:.85rem;font-size:.86rem;margin-bottom:1rem;">
+      <strong>Recommended volunteer:</strong> {{ match[0].name }}
+      <span style="color:#64748b;">— {{ match[1].skills }}. This is a suggestion only; the request is still open until a volunteer accepts.</span>
+    </div>
   {% endif %}
-  <div style="margin-top:1rem;">
+
+  <div style="display:flex;gap:.65rem;flex-wrap:wrap;margin-top:.5rem;">
     {% if r.status=='open' and current_user.role=='volunteer' %}
-      <form method="post" action="{{ url_for('requests.accept', rid=r.id) }}" style="display:inline">
+      <form method="post" action="{{ url_for('requests.accept', rid=r.id) }}" style="margin:0;">
         <input type="hidden" name="volunteer_id" value="{{ current_user.id }}">
-        <button class="btn" type="submit">Accept</button>
+        <button class="btn" type="submit" style="border-radius:999px;">Accept this request</button>
       </form>
     {% endif %}
     {% if r.status=='assigned' and (current_user.id==r.assigned_volunteer_id or current_user.is_admin) %}
-      <form method="post" action="{{ url_for('requests.start', rid=r.id) }}" style="display:inline">
-        <button class="btn" type="submit">Start</button>
+      <form method="post" action="{{ url_for('requests.start', rid=r.id) }}" style="margin:0;">
+        <button class="btn" type="submit" style="border-radius:999px;">Start work</button>
       </form>
     {% endif %}
     {% if r.status=='in_progress' and (current_user.id==r.assigned_volunteer_id or current_user.is_admin) %}
-      <form method="post" action="{{ url_for('requests.complete', rid=r.id) }}" style="display:inline">
-        <button class="btn" type="submit">Complete</button>
+      <form method="post" action="{{ url_for('requests.complete', rid=r.id) }}" style="margin:0;">
+        <button class="btn" type="submit" style="border-radius:999px;">Mark complete</button>
       </form>
     {% endif %}
-    {% if r.status=='completed' and current_user.id==r.seeker_id %}
-      <form method="post" action="{{ url_for('requests.rate', rid=r.id) }}">
-        <label>Rating (1-5)</label>
-        <select name="score">{% for i in range(1,6) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}</select>
-        <label>Comment</label><textarea name="comment" rows="2"></textarea>
-        <button class="btn" type="submit">Submit Rating</button>
-      </form>
-    {% endif %}
+    <a class="btn btn-secondary" href="{{ url_for('requests.dashboard') }}" style="border-radius:999px;">Back to dashboard</a>
   </div>
+
+  {% if r.status=='completed' and current_user.id==r.seeker_id %}
+    <form method="post" action="{{ url_for('requests.rate', rid=r.id) }}" style="margin-top:1.5rem;display:grid;gap:.75rem;max-width:360px;">
+      <div>
+        <label>Rating (1–5)</label>
+        <select name="score" style="border-radius:999px;">{% for i in range(1,6) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}</select>
+      </div>
+      <div><label>Comment (optional)</label><textarea name="comment" rows="2"></textarea></div>
+      <button class="btn" type="submit" style="border-radius:999px;">Submit rating</button>
+    </form>
+  {% endif %}
 </div>
 {% endblock %}

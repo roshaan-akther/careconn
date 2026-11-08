@@ -1,4 +1,4 @@
-# Project Plan — Community Care Connect
+# Project Plan — CareConn
 
 ## 1. Project Idea (Human-Centered)
 

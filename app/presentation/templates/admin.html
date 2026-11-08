@@ -1,8 +1,71 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>Admin Dashboard</h2>
-<h3>Users ({{ users|length }})</h3>
-{% for u in users %}<div class="card">{{ u.name }} — {{ u.email }} — {{ u.role }} — {{ u.location }}</div>{% endfor %}
-<h3>Requests ({{ reqs|length }})</h3>
-{% for r in reqs %}<div class="card">{{ r.title }} — {{ r.status }} — {{ r.seeker.name }}</div>{% endfor %}
+
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1.5rem;">
+  <div class="card" style="border-radius:16px;text-align:center;margin:0;">
+    <div style="font-size:1.6rem;font-weight:800;">{{ stats.users }}</div>
+    <div style="font-size:.72rem;color:#64748b;text-transform:uppercase;letter-spacing:.06em;">Users</div>
+  </div>
+  <div class="card" style="border-radius:16px;text-align:center;margin:0;">
+    <div style="font-size:1.6rem;font-weight:800;">{{ stats.requests }}</div>
+    <div style="font-size:.72rem;color:#64748b;text-transform:uppercase;letter-spacing:.06em;">Requests</div>
+  </div>
+  <div class="card" style="border-radius:16px;text-align:center;margin:0;">
+    <div style="font-size:1.6rem;font-weight:800;">{{ stats.open }}</div>
+    <div style="font-size:.72rem;color:#64748b;text-transform:uppercase;letter-spacing:.06em;">Open</div>
+  </div>
+</div>
+
+<div class="card" style="border-radius:16px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+    <h3 style="margin:0;">Users</h3>
+    <span style="font-size:.8rem;color:#64748b;">{{ stats.seekers }} seekers · {{ stats.volunteers }} volunteers</span>
+  </div>
+  <table style="width:100%;border-collapse:collapse;font-size:.86rem;">
+    <thead>
+      <tr style="text-align:left;color:#64748b;font-size:.72rem;text-transform:uppercase;">
+        <th style="padding:.5rem 0;border-bottom:1px solid #e2e8f0;">Name</th>
+        <th style="padding:.5rem 0;border-bottom:1px solid #e2e8f0;">Email</th>
+        <th style="padding:.5rem 0;border-bottom:1px solid #e2e8f0;">Role</th>
+        <th style="padding:.5rem 0;border-bottom:1px solid #e2e8f0;">Location</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td style="padding:.6rem 0;border-bottom:1px solid #f1f5f9;">{{ u.name }}</td>
+        <td style="padding:.6rem 0;border-bottom:1px solid #f1f5f9;color:#64748b;">{{ u.email }}</td>
+        <td style="padding:.6rem 0;border-bottom:1px solid #f1f5f9;"><span class="badge"> {{ u.role|capitalize }}</span></td>
+        <td style="padding:.6rem 0;border-bottom:1px solid #f1f5f9;">{{ u.location }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card" style="border-radius:16px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+    <h3 style="margin:0;">Requests</h3>
+    <span style="font-size:.8rem;color:#64748b;">{{ stats.completed }} completed</span>
+  </div>
+  <table style="width:100%;border-collapse:collapse;font-size:.86rem;">
+    <thead>
+      <tr style="text-align:left;color:#64748b;font-size:.72rem;text-transform:uppercase;">
+        <th style="padding:.5rem 0;border-bottom:1px solid #e2e8f0;">Title</th>
+        <th style="padding:.5rem 0;border-bottom:1px solid #e2e8f0;">Seeker</th>
+        <th style="padding:.5rem 0;border-bottom:1px solid #e2e8f0;">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in reqs %}
+      <tr>
+        <td style="padding:.6rem 0;border-bottom:1px solid #f1f5f9;"><a href="{{ url_for('requests.detail', rid=r.id) }}">{{ r.title }}</a></td>
+        <td style="padding:.6rem 0;border-bottom:1px solid #f1f5f9;color:#64748b;">{{ r.seeker.name }}</td>
+        <td style="padding:.6rem 0;border-bottom:1px solid #f1f5f9;"><span class="badge {{ r.status }}">{{ r.status|status_label }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

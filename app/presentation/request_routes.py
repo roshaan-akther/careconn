@@ -10,6 +10,8 @@ ms = MatchingService("balanced")
 @request_bp.route("/")
 @login_required
 def dashboard():
+    if current_user.is_admin:
+        return redirect(url_for("admin.admin_dashboard"))
     if current_user.role == "seeker":
         reqs = RequestRepo.by_seeker(current_user.id)
     elif current_user.role == "volunteer":
@@ -20,7 +22,7 @@ def dashboard():
         open_reqs = []
     unread = NotificationRepo.unread_count(current_user.id)
     return render_template("dashboard.html", reqs=reqs, open_reqs=open_reqs if current_user.role=="volunteer" else [],
-                          unread=unread)
+                          unread=unread, strategy_name=ms.strategy_name)
 
 @request_bp.route("/requests")
 @login_required
@@ -99,4 +101,5 @@ def set_strategy():
 @login_required
 def notifications():
     ns = NotificationRepo.for_user(current_user.id)
+    NotificationRepo.mark_all_read(current_user.id)
     return render_template("notifications.html", notifications=ns)
