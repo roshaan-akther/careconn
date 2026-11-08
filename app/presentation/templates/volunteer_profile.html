@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Volunteer Profile</h2>
+  <form method="post">
+    <label>Skills (comma separated)</label><input name="skills" value="{{ vp.skills if vp else '' }}" placeholder="groceries,driving">
+    <label>Availability</label><input name="availability" value="{{ vp.availability if vp else 'anytime' }}">
+    <label>Service radius (km)</label><input name="radius_km" type="number" value="{{ vp.radius_km if vp else 10 }}">
+    {% if vp %}<p>Rating: {{ vp.rating_avg|round(2) }} ({{ vp.rating_count }} ratings)</p>{% endif %}
+    <br><button class="btn" type="submit">Save</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Admin Dashboard</h2>
+<h3>Users ({{ users|length }})</h3>
+{% for u in users %}<div class="card">{{ u.name }} — {{ u.email }} — {{ u.role }} — {{ u.location }}</div>{% endfor %}
+<h3>Requests ({{ reqs|length }})</h3>
+{% for r in reqs %}<div class="card">{{ r.title }} — {{ r.status }} — {{ r.seeker.name }}</div>{% endfor %}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="max-width:480px;margin:2rem auto;">
+  <h2>Register</h2>
+  <form method="post">
+    <label>Name</label><input name="name" required>
+    <label>Email</label><input name="email" type="email" required>
+    <label>Password</label><input name="password" type="password" required>
+    <label>Role</label>
+    <select name="role"><option value="seeker">Seeker (needs help)</option><option value="volunteer">Volunteer (helps)</option></select>
+    <label>Location</label><input name="location" placeholder="e.g. Downtown">
+    <br><br>
+    <button class="btn" type="submit">Register</button>
+  </form>
+</div>
+{% endblock %}

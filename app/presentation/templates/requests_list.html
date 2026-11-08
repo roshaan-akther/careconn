@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Open Requests</h2>
+{% for r in reqs %}
+  <div class="card">
+    <strong>{{ r.title }}</strong> — {{ r.category }} ({{ r.urgency }}) — {{ r.location }}<br>
+    {{ r.description }}<br>
+    <a href="{{ url_for('requests.detail', rid=r.id) }}">View</a>
+  </div>
+{% else %}<p>No open requests.</p>{% endfor %}
+{% endblock %}
