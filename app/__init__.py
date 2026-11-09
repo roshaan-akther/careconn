@@ -22,11 +22,15 @@ def create_app(config_name="default"):
     from app.presentation.request_routes import request_bp
     from app.presentation.volunteer_routes import volunteer_bp
     from app.presentation.admin_routes import admin_bp
+    from app.presentation.arch_routes import arch_bp
+    from app.presentation.learn_routes import learn_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(request_bp)
     app.register_blueprint(volunteer_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(arch_bp)
+    app.register_blueprint(learn_bp)
 
     with app.app_context():
         db.create_all()

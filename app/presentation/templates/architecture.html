@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  .arch-hero { background:#1f3864; color:#fff; border-radius:18px; padding:1.5rem; margin-bottom:1.25rem; }
+  .arch-hero h2 { margin:0 0 .25rem; }
+  .arch-hero p { margin:0; opacity:.85; font-size:.9rem; }
+  .layer { background:#fff; border-radius:16px; padding:1.25rem; margin-bottom:1rem; box-shadow:0 2px 12px rgba(15,23,42,.07); }
+  .layer-head { display:flex; justify-content:space-between; align-items:baseline; gap:1rem; flex-wrap:wrap; margin-bottom:.75rem; }
+  .layer-head h3 { margin:0; font-size:1rem; }
+  .layer-head span { color:#64748b; font-size:.78rem; }
+  .module { border-top:1px solid #eef1f6; padding:.75rem 0; }
+  .module:first-of-type { border-top:none; }
+  .file { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.78rem; color:#4f46e5; margin-bottom:.4rem; }
+  .cls { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.8rem; margin:.2rem 0 .2rem .25rem; }
+  .cls .kw { color:#9333ea; }
+  .fn { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.78rem; color:#334155; margin:.15rem 0 .15rem 1.4rem; }
+  .fn .args { color:#94a3b8; }
+  .empty-mod { color:#94a3b8; font-size:.78rem; }
+  .pattern { background:#0f172a; color:#e2e8f0; border-radius:18px; padding:1.5rem; }
+  .pattern h2 { margin:0 0 .25rem; font-size:1.1rem; }
+  .pattern p { color:#94a3b8; font-size:.85rem; margin:0 0 1rem; }
+  .uml { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.8rem; line-height:1.9; color:#cbd5e1; }
+  .uml .iface { color:#7dd3fc; }
+  .uml .impl { color:#86efac; }
+  .uml .svc { color:#fca5a5; }
+  .tag { display:inline-block; font-size:.68rem; background:#1e293b; color:#94a3b8; border-radius:999px; padding:.1rem .5rem; margin-left:.4rem; }
+</style>
+
+<div class="arch-hero">
+  <h2>Backend Architecture</h2>
+  <p>Layered Architecture + Strategy Pattern — the real structure, extracted from the running code.</p>
+</div>
+
+<div style="font-size:.8rem;color:#64748b;margin:0 0 .75rem .25rem;">Request flow: Presentation → Application → Domain → Data Access → SQLite</div>
+
+{% for layer in layers %}
+  <div class="layer">
+    <div class="layer-head">
+      <h3>{{ loop.index }}. {{ layer.name }}</h3>
+      <span>{{ layer.role }}</span>
+    </div>
+    {% for mod in layer.modules %}
+      <div class="module">
+        <div class="file">{{ mod.file }}</div>
+        {% for c in mod.classes %}
+          <div class="cls"><span class="kw">class</span> {{ c.name }}{% if c.bases %}({{ c.bases|join(', ') }}){% endif %}</div>
+          {% for m in c.methods %}
+            <div class="fn">def {{ m.name }}(<span class="args">{{ m.args|join(', ') }}</span>)</div>
+          {% endfor %}
+        {% endfor %}
+        {% for f in mod.functions %}
+          <div class="fn">def {{ f.name }}(<span class="args">{{ f.args|join(', ') }}</span>)</div>
+        {% endfor %}
+        {% if not mod.classes and not mod.functions %}
+          <div class="empty-mod">module entry point</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+{% endfor %}
+
+<div class="pattern">
+  <h2>Strategy Pattern</h2>
+  <p>Swappable volunteer-matching algorithms, selected at runtime.</p>
+  {% for mod in pattern %}
+    <div class="file" style="color:#7dd3fc;">{{ mod.file }}</div>
+    <div class="uml">
+      {% for c in mod.classes %}
+        <div><span class="{% if 'MatchingStrategy' in c.bases %}impl{% elif c.name == 'MatchingStrategy' %}iface{% else %}svc{% endif %}">class {{ c.name }}</span>{% if c.bases %} <span class="tag">extends {{ c.bases|join(', ') }}</span>{% endif %}</div>
+        {% for m in c.methods %}
+          <div style="margin-left:1.2rem;">· {{ m.name }}({{ m.args|join(', ') }})</div>
+        {% endfor %}
+      {% endfor %}
+    </div>
+  {% endfor %}
+  <div style="margin-top:1rem;font-size:.8rem;color:#94a3b8;font-family:ui-monospace,monospace;">
+    MatchingService.set_strategy(name) → chooses a concrete strategy<br>
+    MatchingService.find(request) → delegates to strategy.match(request, volunteers)
+  </div>
+</div>
+{% endblock %}

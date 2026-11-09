@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  .learn-hero { background:#1f3864; color:#fff; border-radius:20px; padding:2rem; margin-bottom:2rem; }
+  .learn-hero h2 { margin:0 0 .4rem; font-size:1.5rem; }
+  .learn-hero p { margin:0; opacity:.9; max-width:520px; }
+  .block { margin-bottom:2.25rem; }
+  .block h3 { font-size:1.05rem; margin:0 0 .6rem; }
+  .muted { color:#475569; margin:0; }
+  .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+  @media (max-width:760px) { .cards { grid-template-columns:1fr; } }
+  .card-lite { background:#fff; border-radius:16px; padding:1.25rem; box-shadow:0 2px 12px rgba(15,23,42,.06); }
+  .card-lite .k { font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; color:#64748b; font-weight:700; }
+  .card-lite h4 { margin:.2rem 0 .3rem; }
+  .card-lite p { margin:0; color:#475569; font-size:.86rem; line-height:1.5; }
+  .flow { display:grid; gap:.6rem; }
+  .flow div { display:flex; gap:.6rem; align-items:baseline; font-size:.9rem; }
+  .flow .n { color:#4f46e5; font-weight:700; font-size:.8rem; min-width:1.1rem; }
+  .faq details { border-bottom:1px solid #eef1f6; padding:.75rem 0; }
+  .faq details:last-child { border-bottom:none; }
+  .faq summary { cursor:pointer; font-weight:600; font-size:.9rem; }
+  .faq p { color:#475569; font-size:.85rem; margin:.4rem 0 0; }
+  .cta { background:#eef2ff; border-radius:16px; padding:1.25rem; text-align:center; }
+  .cta p { margin:0 0 .9rem; color:#475569; }
+</style>
+
+<div class="learn-hero">
+  <h2>CareConn</h2>
+  <p>Ask for a little help. Give a little help. Right where you live.</p>
+</div>
+
+<div class="block">
+  <h3>Why we exist</h3>
+  <p class="muted">Asking for help is hard. Offering it is hard too, because you don't know who needs it. CareConn simply brings the two together — neighbour to neighbour, without money or paperwork.</p>
+</div>
+
+<div class="block">
+  <h3>Who you can be</h3>
+  <div class="cards">
+    <div class="card-lite">
+      <div class="k">Seeker</div>
+      <h4>I need help</h4>
+      <p>Post what you need. See when someone accepts. Rate them when it's done.</p>
+    </div>
+    <div class="card-lite">
+      <div class="k">Volunteer</div>
+      <h4>I can help</h4>
+      <p>See nearby requests. Accept what fits your time. Mark it complete.</p>
+    </div>
+    <div class="card-lite">
+      <div class="k">Admin</div>
+      <h4>I keep it safe</h4>
+      <p>Watch over users and requests so the community stays healthy.</p>
+    </div>
+  </div>
+</div>
+
+<div class="block">
+  <h3>Seeking help</h3>
+  <div class="flow">
+    <div><span class="n">1</span><span>Create an account and add your location.</span></div>
+    <div><span class="n">2</span><span>Post what you need, in your own words.</span></div>
+    <div><span class="n">3</span><span>A volunteer nearby accepts.</span></div>
+    <div><span class="n">4</span><span>It's done — leave a rating if you like.</span></div>
+  </div>
+</div>
+
+<div class="block">
+  <h3>Volunteering</h3>
+  <div class="flow">
+    <div><span class="n">1</span><span>Create an account and add your skills.</span></div>
+    <div><span class="n">2</span><span>Browse open requests near you.</span></div>
+    <div><span class="n">3</span><span>Accept, help, and mark it complete.</span></div>
+    <div><span class="n">4</span><span>Build trust through ratings.</span></div>
+  </div>
+</div>
+
+<div class="block">
+  <h3>What we believe</h3>
+  <p class="muted">People deserve to ask without shame. Volunteers deserve to choose freely. Help should be local, personal, and free. Nothing here costs money, and no one is forced to accept.</p>
+</div>
+
+<div class="block">
+  <h3>Questions</h3>
+  <div class="faq">
+    <details><summary>Is it free?</summary><p>Yes. No payments, ever.</p></details>
+    <details><summary>Can I be both?</summary><p>One role per account. Make a second account if you need both.</p></details>
+    <details><summary>Who chooses the volunteer?</summary><p>We suggest someone suitable. They still choose to accept.</p></details>
+    <details><summary>What if no one accepts?</summary><p>Your request stays open. You can edit it or post again.</p></details>
+  </div>
+</div>
+
+<div class="cta">
+  {% if current_user.is_authenticated %}
+    <p><strong>You are already part of this.</strong> And that's a great thing.</p>
+    <a class="btn" href="{{ url_for('requests.dashboard') }}" style="border-radius:999px;">Go to dashboard</a>
+  {% else %}
+    <p>Ready when you are.</p>
+    <a class="btn" href="{{ url_for('auth.register') }}" style="border-radius:999px;">Create an account</a>
+  {% endif %}
+</div>
+{% endblock %}

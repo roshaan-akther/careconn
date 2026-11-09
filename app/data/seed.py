@@ -29,6 +29,21 @@ def seed_if_empty():
         u = UserRepo.create(name, email, pw, role="volunteer", location=loc)
         VolunteerRepo.update_profile(u.id, skills, avail, 15)
 
+    # Seed realistic ratings so volunteer profiles look lived-in.
+    seed_ratings = {
+        "rohan@care.com": (4.9, 27),
+        "dilani@care.com": (4.7, 18),
+        "kasun@care.com": (4.5, 12),
+        "tharushi@care.com": (4.8, 21),
+        "arjun@care.com": (4.6, 15),
+    }
+    for email, (avg, count) in seed_ratings.items():
+        user = UserRepo.get_by_email(email)
+        if user and user.volunteer_profile:
+            user.volunteer_profile.rating_avg = avg
+            user.volunteer_profile.rating_count = count
+    db.session.commit()
+
     # seed requests
     seeker_users = [u for u in User.query.filter_by(role="seeker").all()]
     sample_reqs = [
